@@ -1,0 +1,40 @@
+modules = ["nodejs-24"]
+
+[[artifacts]]
+id = "artifacts/api-server"
+
+[[artifacts]]
+id = "artifacts/mockup-sandbox"
+
+[deployment]
+router = "application"
+deploymentTarget = "autoscale"
+
+[deployment.postBuild]
+args = ["pnpm", "store", "prune"]
+env = { "CI" = "true" }
+
+[workflows]
+runButton = "Project"
+
+[agent]
+stack = "PNPM_WORKSPACE"
+expertMode = true
+
+[postMerge]
+path = "scripts/post-merge.sh"
+timeoutMs = 20000
+
+[nix]
+channel = "stable-25_05"
+
+[userenv]
+
+[userenv.shared]
+VITE_FIREBASE_API_KEY = "AIzaSyAw1QbxHOfZ-Lnsptl6bnxBPoQGOozQWGg"
+VITE_FIREBASE_AUTH_DOMAIN = "market-bin-saleem-1.firebaseapp.com"
+VITE_FIREBASE_PROJECT_ID = "market-bin-saleem-1"
+VITE_FIREBASE_STORAGE_BUCKET = "market-bin-saleem-1.firebasestorage.app"
+VITE_FIREBASE_MESSAGING_SENDER_ID = "482332795289"
+VITE_FIREBASE_APP_ID = "1:482332795289:web:1e53aa84132d69d1b67308"
+VITE_FIREBASE_MEASUREMENT_ID = "G-7H9WCQX3HK"
