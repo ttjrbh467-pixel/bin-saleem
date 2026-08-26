@@ -11,22 +11,36 @@ function sortByDate<T extends { createdAt: string }>(arr: T[]): T[] {
   return [...arr].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 }
 
+const FIRESTORE_TIMEOUT_MS = 8000;
+
+function withFirestoreTimeout<T>(request: Promise<T>, label: string): Promise<T> {
+  return Promise.race([
+    request,
+    new Promise<T>((_, reject) => {
+      setTimeout(() => reject(new Error(`انتهت مهلة الاتصال أثناء ${label}`)), FIRESTORE_TIMEOUT_MS);
+    }),
+  ]);
+}
+
 // ─── USERS ───────────────────────────────────────────────────────────────
 export async function upsertUser(user: Omit<FSUser, "createdAt">) {
   const docRef = doc(db, "users", user.uid);
-  const snap = await getDoc(docRef);
+  const snap = await withFirestoreTimeout(getDoc(docRef), "تحميل الحساب");
   if (!snap.exists()) {
-    await setDoc(docRef, { ...user, createdAt: new Date().toISOString() });
+    await withFirestoreTimeout(
+      setDoc(docRef, { ...user, createdAt: new Date().toISOString() }),
+      "حفظ الحساب",
+    );
   }
 }
 
 export async function getUser(uid: string): Promise<FSUser | null> {
-  const snap = await getDoc(doc(db, "users", uid));
+  const snap = await withFirestoreTimeout(getDoc(doc(db, "users", uid)), "تحميل الحساب");
   return snap.exists() ? (snap.data() as FSUser) : null;
 }
 
 export async function getAllUsers(): Promise<FSUser[]> {
-  const snap = await getDocs(collection(db, "users"));
+  const snap = await withFirestoreTimeout(getDocs(collection(db, "users")), "تحميل المستخدمين");
   return snap.docs.map((d) => d.data() as FSUser);
 }
 
@@ -78,10 +92,10 @@ const DEFAULT_CATEGORIES: Omit<FSCategory, "id">[] = [
 ];
 
 export async function initCategories() {
-  const snap = await getDocs(collection(db, "categories"));
+  const snap = await withFirestoreTimeout(getDocs(collection(db, "categories")), "تحميل الأقسام");
   if (snap.empty) {
     for (const cat of DEFAULT_CATEGORIES) {
-      await addDoc(collection(db, "categories"), cat);
+      await withFirestoreTimeout(addDoc(collection(db, "categories"), cat), "إنشاء الأقسام");
     }
   }
 }
@@ -89,7 +103,7 @@ export async function initCategories() {
 export async function getCategories(): Promise<FSCategory[]> {
   // order by "order" field — single field, no composite index needed
   const q = query(collection(db, "categories"), orderBy("order"));
-  const snap = await getDocs(q);
+  const snap = await withFirestoreTimeout(getDocs(q), "تحميل الأقسام");
   return snap.docs.map((d) => ({ id: d.id, ...d.data() } as FSCategory));
 }
 
@@ -112,10 +126,10 @@ export async function getProducts(categoryId?: string): Promise<FSProduct[]> {
   if (categoryId) {
     // Simple single-field where — no composite index needed; sort client-side
     const q = query(collection(db, "products"), where("category", "==", categoryId));
-    snap = await getDocs(q);
+    snap = await withFirestoreTimeout(getDocs(q), "تحميل المنتجات");
   } else {
     const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
-    snap = await getDocs(q);
+    snap = await withFirestoreTimeout(getDocs(q), "تحميل المنتجات");
   }
   const products = snap.docs.map((d) => ({ id: d.id, ...d.data() } as FSProduct));
   return categoryId ? sortByDate(products) : products;
@@ -123,7 +137,7 @@ export async function getProducts(categoryId?: string): Promise<FSProduct[]> {
 
 export async function getProductByBarcode(barcode: string): Promise<FSProduct | null> {
   const q = query(collection(db, "products"), where("barcode", "==", barcode), limit(1));
-  const snap = await getDocs(q);
+  const snap = await withFirestoreTimeout(getDocs(q), "البحث عن المنتج");
   if (snap.empty) return null;
   const d = snap.docs[0];
   return { id: d.id, ...d.data() } as FSProduct;
@@ -147,7 +161,8 @@ export async function deleteProduct(id: string) {
 
 export function subscribeProducts(
   categoryId: string | null,
-  callback: (products: FSProduct[]) => void
+  callback: (products: FSProduct[]) => void,
+  onError?: (error: Error) => void,
 ): Unsubscribe {
   let q;
   if (categoryId) {
@@ -156,10 +171,14 @@ export function subscribeProducts(
   } else {
     q = query(collection(db, "products"), orderBy("createdAt", "desc"), limit(80));
   }
-  return onSnapshot(q, (snap) => {
-    const products = snap.docs.map((d) => ({ id: d.id, ...d.data() } as FSProduct));
-    callback(categoryId ? sortByDate(products) : products);
-  });
+  return onSnapshot(
+    q,
+    (snap) => {
+      const products = snap.docs.map((d) => ({ id: d.id, ...d.data() } as FSProduct));
+      callback(categoryId ? sortByDate(products) : products);
+    },
+    (error) => onError?.(error),
+  );
 }
 
 // ─── ORDERS ──────────────────────────────────────────────────────────────
@@ -173,14 +192,14 @@ export async function createOrder(order: Omit<FSOrder, "id" | "createdAt">) {
 
 export async function getOrders(): Promise<FSOrder[]> {
   const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
-  const snap = await getDocs(q);
+  const snap = await withFirestoreTimeout(getDocs(q), "تحميل الطلبات");
   return snap.docs.map((d) => ({ id: d.id, ...d.data() } as FSOrder));
 }
 
 export async function getUserOrders(userId: string): Promise<FSOrder[]> {
   // Single where, sort client-side
   const q = query(collection(db, "orders"), where("userId", "==", userId));
-  const snap = await getDocs(q);
+  const snap = await withFirestoreTimeout(getDocs(q), "تحميل طلباتك");
   return sortByDate(snap.docs.map((d) => ({ id: d.id, ...d.data() } as FSOrder)));
 }
 
