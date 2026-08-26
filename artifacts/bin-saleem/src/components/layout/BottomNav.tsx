@@ -3,6 +3,7 @@ import { Home, Percent, ShoppingCart, User, LayoutDashboard, ScanLine, Truck } f
 import { useCart } from "../../contexts/CartContext";
 import { useAuth } from "../../contexts/AuthContext";
 import { motion } from "framer-motion";
+import { preloadPage } from "../../routes/lazyPages";
 
 export function BottomNav() {
   const [location] = useLocation();
@@ -50,7 +51,13 @@ export function BottomNav() {
           const Icon = tab.icon;
 
           return (
-            <Link key={tab.path} href={tab.path} className="relative w-full flex flex-col items-center gap-1 group">
+            <Link
+              key={tab.path}
+              href={tab.path}
+              onMouseEnter={() => preloadPage(tab.path)}
+              onTouchStart={() => preloadPage(tab.path)}
+              className="relative w-full flex flex-col items-center gap-1 group"
+            >
               <div className="relative">
                 <Icon
                   className={`w-6 h-6 transition-colors duration-300 ${
