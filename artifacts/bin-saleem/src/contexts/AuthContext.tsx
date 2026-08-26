@@ -86,6 +86,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false); // unblock UI immediately
       clearTimeout(timeout);
       if (currentUser) {
+        // Give the user a route immediately. Firestore can fill in the real
+        // role in the background without blocking the whole application.
+        setRole(currentUser.email === ADMIN_EMAIL ? "ADMIN" : "CUSTOMER");
         // Load role in background — non-blocking
         loadUserRole(currentUser).catch(() => {
           setRole(currentUser.email === ADMIN_EMAIL ? "ADMIN" : "CUSTOMER");
