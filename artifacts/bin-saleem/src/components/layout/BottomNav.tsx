@@ -44,8 +44,9 @@ export function BottomNav() {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-card/80 backdrop-blur-xl border-t border-border pb-safe">
-      <div className="flex items-center justify-around px-2 py-3">
+    <div className="fixed bottom-4 left-3 right-3 z-50 pointer-events-none">
+      <div className="floating-nav mx-auto max-w-md rounded-[28px] p-2 pointer-events-auto">
+        <div className="flex items-center justify-around px-1 py-1">
         {tabs.map((tab) => {
           const isActive = location === tab.path;
           const Icon = tab.icon;
@@ -61,7 +62,7 @@ export function BottomNav() {
               <div className="relative">
                 <Icon
                   className={`w-6 h-6 transition-colors duration-300 ${
-                    isActive ? "text-primary" : "text-muted-foreground group-hover:text-primary/70"
+                    isActive ? "text-primary" : "text-muted-foreground group-hover:text-primary"
                   }`}
                 />
                 {tab.badge !== undefined && tab.badge > 0 && (
@@ -72,14 +73,14 @@ export function BottomNav() {
                 {isActive && (
                   <motion.div
                     layoutId="bottom-nav-indicator"
-                    className="absolute -inset-2 bg-primary/20 rounded-full -z-10 blur-md"
+                    className="absolute -inset-2 bg-secondary/25 rounded-full -z-10 blur-md"
                     transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                   />
                 )}
               </div>
               <span
                 className={`text-[10px] font-medium transition-colors duration-300 ${
-                  isActive ? "text-primary text-neon-blue" : "text-muted-foreground group-hover:text-primary/70"
+                    isActive ? "text-primary font-bold" : "text-muted-foreground group-hover:text-primary"
                 }`}
               >
                 {tab.name}
@@ -87,6 +88,7 @@ export function BottomNav() {
             </Link>
           );
         })}
+        </div>
       </div>
     </div>
   );
