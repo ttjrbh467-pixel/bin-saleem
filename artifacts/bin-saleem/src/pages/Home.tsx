@@ -5,6 +5,7 @@ import { useCart } from "../contexts/CartContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { getCategories, subscribeProducts, initCategories } from "../lib/firestoreService";
+import { isFirebaseConfigured } from "../lib/firebase";
 import type { FSCategory, FSProduct } from "../types";
 import { useLocation } from "wouter";
 
@@ -20,6 +21,11 @@ export default function Home() {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
+    if (!isFirebaseConfigured) {
+      setLoadingCats(false);
+      return;
+    }
+
     initCategories()
       .then(() => getCategories())
       .then((cats) => {
@@ -30,6 +36,12 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    if (!isFirebaseConfigured) {
+      setProducts([]);
+      setLoadingProds(false);
+      return;
+    }
+
     setLoadingProds(true);
     const unsub = subscribeProducts(
       activeCategory,
