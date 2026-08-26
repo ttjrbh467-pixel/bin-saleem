@@ -2,7 +2,6 @@ import { Link, useLocation } from "wouter";
 import { Home, Percent, ShoppingCart, User, LayoutDashboard, ScanLine, Truck } from "lucide-react";
 import { useCart } from "../../contexts/CartContext";
 import { useAuth } from "../../contexts/AuthContext";
-import { motion } from "framer-motion";
 import { preloadPage } from "../../routes/lazyPages";
 
 export function BottomNav() {
@@ -45,8 +44,8 @@ export function BottomNav() {
 
   return (
     <div className="fixed bottom-4 left-3 right-3 z-50 pointer-events-none">
-      <div className="floating-nav mx-auto max-w-md rounded-[28px] p-2 pointer-events-auto">
-        <div className="flex items-center justify-around px-1 py-1">
+      <div className="floating-nav mx-auto max-w-md pointer-events-auto">
+        <div className="flex items-end justify-around gap-2 px-1 py-1">
         {tabs.map((tab) => {
           const isActive = location === tab.path;
           const Icon = tab.icon;
@@ -57,12 +56,14 @@ export function BottomNav() {
               href={tab.path}
               onMouseEnter={() => preloadPage(tab.path)}
               onTouchStart={() => preloadPage(tab.path)}
-              className="relative w-full flex flex-col items-center gap-1 group"
+              className={`relative flex w-[62px] flex-col items-center gap-1 rounded-2xl px-1 py-2 group ${
+                isActive ? "floating-nav-item-active" : "floating-nav-item"
+              }`}
             >
               <div className="relative">
                 <Icon
                   className={`w-6 h-6 transition-colors duration-300 ${
-                    isActive ? "text-primary" : "text-muted-foreground group-hover:text-primary"
+                    isActive ? "text-white" : "text-primary group-hover:text-primary"
                   }`}
                 />
                 {tab.badge !== undefined && tab.badge > 0 && (
@@ -70,17 +71,10 @@ export function BottomNav() {
                     {tab.badge}
                   </div>
                 )}
-                {isActive && (
-                  <motion.div
-                    layoutId="bottom-nav-indicator"
-                    className="absolute -inset-2 bg-secondary/25 rounded-full -z-10 blur-md"
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                  />
-                )}
               </div>
               <span
                 className={`text-[10px] font-medium transition-colors duration-300 ${
-                    isActive ? "text-primary font-bold" : "text-muted-foreground group-hover:text-primary"
+                    isActive ? "text-white font-bold" : "text-muted-foreground group-hover:text-primary"
                 }`}
               >
                 {tab.name}
@@ -88,8 +82,8 @@ export function BottomNav() {
             </Link>
           );
         })}
-        </div>
       </div>
+    </div>
     </div>
   );
 }
