@@ -77,7 +77,7 @@ export default function Home() {
             onClick={() => setLocation("/profile")}
           >
             {user?.photoURL ? (
-              <img src={user.photoURL} alt={user.displayName || ""} className="w-full h-full object-cover" />
+              <img src={user.photoURL} alt={user.displayName || ""} loading="lazy" decoding="async" className="w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full bg-primary/20 flex items-center justify-center text-primary font-black text-lg">
                 {user?.displayName?.charAt(0) || "U"}
@@ -148,6 +148,8 @@ export default function Home() {
                       <img
                         src={cat.imageUrl}
                         alt={cat.nameAr}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover"
                         onError={(e) => {
                           (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${cat.nameAr}&background=00D4FF&color=000&size=64`;
@@ -201,7 +203,7 @@ export default function Home() {
           ) : (
             <AnimatePresence>
               <div className="grid grid-cols-2 gap-4">
-                {filtered.map((product, idx) => (
+                {filtered.slice(0, 60).map((product, idx) => (
                   <motion.div
                     key={product.id}
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -221,6 +223,8 @@ export default function Home() {
                       <img
                         src={product.imageUrl || "https://via.placeholder.com/200x200?text=منتج"}
                         alt={product.nameAr}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover"
                         onError={(e) => {
                           (e.target as HTMLImageElement).src = "https://via.placeholder.com/200x200?text=منتج";
