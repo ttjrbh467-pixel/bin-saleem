@@ -44,36 +44,35 @@
 }
 
 :root {
-  /* Dark mode is default */
-  --background: 0 0% 4%; /* #0A0A0A */
-  --foreground: 0 0% 98%;
+  --background: 40 33% 95%; /* warm ivory */
+  --foreground: 165 48% 19%; /* Bin Saleem green */
   
-  --card: 0 0% 7%; /* #111111 */
-  --card-foreground: 0 0% 98%;
-  --card-border: 0 0% 15%;
+  --card: 42 100% 99%;
+  --card-foreground: 165 48% 19%;
+  --card-border: 40 26% 84%;
 
-  --popover: 0 0% 7%;
-  --popover-foreground: 0 0% 98%;
-  --popover-border: 0 0% 15%;
+  --popover: 42 100% 99%;
+  --popover-foreground: 165 48% 19%;
+  --popover-border: 40 26% 84%;
 
-  --primary: 190 100% 50%; /* #00D4FF - Neon Blue */
-  --primary-foreground: 0 0% 0%;
+  --primary: 164 72% 31%;
+  --primary-foreground: 0 0% 100%;
 
-  --secondary: 110 100% 54%; /* #39FF14 - Neon Green */
-  --secondary-foreground: 0 0% 0%;
+  --secondary: 39 96% 51%;
+  --secondary-foreground: 165 48% 15%;
 
-  --muted: 0 0% 15%;
-  --muted-foreground: 0 0% 65%;
+  --muted: 40 25% 90%;
+  --muted-foreground: 165 16% 43%;
 
-  --accent: 51 100% 50%; /* #FFD700 - Gold */
-  --accent-foreground: 0 0% 0%;
+  --accent: 39 96% 51%;
+  --accent-foreground: 165 48% 15%;
 
-  --destructive: 0 100% 50%;
-  --destructive-foreground: 0 0% 98%;
+  --destructive: 2 72% 48%;
+  --destructive-foreground: 0 0% 100%;
 
-  --border: 0 0% 15%;
-  --input: 0 0% 15%;
-  --ring: 190 100% 50%;
+  --border: 40 26% 84%;
+  --input: 40 26% 84%;
+  --ring: 164 72% 31%;
   
   --app-font-sans: 'Tajawal', sans-serif;
   --radius: 1rem;
@@ -85,7 +84,29 @@
   }
   body {
     @apply font-sans antialiased bg-background text-foreground;
+    background-image:
+      radial-gradient(circle at 8% 4%, hsla(39, 96%, 51%, 0.13), transparent 28rem),
+      radial-gradient(circle at 92% 92%, hsla(164, 72%, 31%, 0.1), transparent 30rem);
+    min-height: 100dvh;
   }
+}
+
+/* Existing screens used white text for the former dark theme. Keep their
+   hierarchy readable on the new warm surface without rewriting every screen. */
+body .text-white {
+  color: hsl(var(--foreground)) !important;
+}
+
+body .bg-black,
+body .bg-background\/60 {
+  background-color: hsla(40, 33%, 95%, 0.88);
+}
+
+.floating-nav {
+  background: hsla(42, 100%, 99%, 0.92);
+  border: 1px solid hsla(39, 96%, 51%, 0.42);
+  box-shadow: 0 14px 35px hsla(165, 48%, 19%, 0.16), 0 3px 10px hsla(39, 96%, 51%, 0.12);
+  backdrop-filter: blur(18px);
 }
 
 .neon-blue {
