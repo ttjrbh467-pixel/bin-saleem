@@ -1,7 +1,7 @@
 import { useAuth } from "../contexts/AuthContext";
 import { Redirect } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
-import logoUrl from "@assets/Screenshot_٢٠٢٦٠٣٣٠_٠٨٠٤١٥_Gallery_1775088816831.jpg";
+import logoUrl from "@assets/1024_1787703636395.png";
 import { FcGoogle } from "react-icons/fc";
 import { Loader2, AlertCircle, ShieldCheck } from "lucide-react";
 import { useState } from "react";
@@ -55,13 +55,13 @@ export default function Login() {
       <div className="absolute inset-0 z-0 pointer-events-none">
         <motion.div
           className="absolute top-[-10%] left-[-10%] w-96 h-96 rounded-full"
-          style={{ background: "radial-gradient(circle, hsla(190,100%,50%,0.15) 0%, transparent 70%)" }}
+          style={{ background: "radial-gradient(circle, hsla(39,96%,51%,0.22) 0%, transparent 70%)" }}
           animate={{ scale: [1, 1.15, 1], opacity: [0.6, 1, 0.6] }}
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div
           className="absolute bottom-[-10%] right-[-10%] w-96 h-96 rounded-full"
-          style={{ background: "radial-gradient(circle, hsla(110,100%,54%,0.10) 0%, transparent 70%)" }}
+          style={{ background: "radial-gradient(circle, hsla(164,72%,31%,0.16) 0%, transparent 70%)" }}
           animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.9, 0.5] }}
           transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
         />
@@ -84,13 +84,13 @@ export default function Login() {
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="w-36 h-36 rounded-full overflow-hidden mb-6"
+          className="w-44 h-44 rounded-[2rem] overflow-hidden mb-6 bg-card p-2"
           style={{
-            border: "3px solid hsl(190, 100%, 50%)",
-            boxShadow: "0 0 30px hsla(190,100%,50%,0.5), 0 0 60px hsla(190,100%,50%,0.2)",
+            border: "1px solid hsla(39,96%,51%,0.55)",
+            boxShadow: "0 18px 45px hsla(165,48%,19%,0.18)",
           }}
         >
-          <img src={logoUrl} alt="Bin Saleem Supermarket" className="w-full h-full object-cover" />
+          <img src={logoUrl} alt="Bin Saleem Supermarket" className="w-full h-full object-contain rounded-2xl" />
         </motion.div>
 
         {/* Title */}
@@ -99,7 +99,7 @@ export default function Login() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           className="text-4xl font-black text-white mb-1 text-center"
-          style={{ textShadow: "0 0 20px hsla(190,100%,50%,0.6)" }}
+          style={{ color: "hsl(165,48%,19%)" }}
         >
           سوق بن سليم
         </motion.h1>
@@ -108,7 +108,7 @@ export default function Login() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
           className="text-sm font-medium text-center mb-3"
-          style={{ color: "hsl(190,100%,70%)" }}
+          style={{ color: "hsl(164,72%,31%)" }}
         >
           BIN SALEEM SUPERMARKET
         </motion.p>
@@ -133,11 +133,11 @@ export default function Login() {
           whileTap={{ scale: 0.98 }}
           className="w-full relative overflow-hidden rounded-2xl p-[1px] mb-4 disabled:opacity-60 disabled:cursor-not-allowed"
           style={{
-            background: "linear-gradient(135deg, hsl(190,100%,50%), hsl(110,100%,54%), hsl(190,100%,50%))",
+             background: "linear-gradient(135deg, hsl(164,72%,31%), hsl(39,96%,51%), hsl(164,72%,31%))",
             backgroundSize: "200% 200%",
           }}
         >
-          <div className="w-full rounded-2xl bg-card px-6 py-4 flex items-center justify-center gap-3">
+           <div className="w-full rounded-2xl bg-card px-6 py-4 flex items-center justify-center gap-3">
             {isSigningIn ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" style={{ color: "hsl(190,100%,50%)" }} />
