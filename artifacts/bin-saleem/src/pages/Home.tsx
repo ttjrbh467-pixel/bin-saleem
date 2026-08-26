@@ -31,11 +31,22 @@ export default function Home() {
 
   useEffect(() => {
     setLoadingProds(true);
-    const unsub = subscribeProducts(activeCategory, (prods) => {
-      setProducts(prods);
-      setLoadingProds(false);
-    });
-    return unsub;
+    const unsub = subscribeProducts(
+      activeCategory,
+      (prods) => {
+        setProducts(prods);
+        setLoadingProds(false);
+      },
+      () => {
+        setProducts([]);
+        setLoadingProds(false);
+      },
+    );
+    const timeout = window.setTimeout(() => setLoadingProds(false), 8500);
+    return () => {
+      window.clearTimeout(timeout);
+      unsub();
+    };
   }, [activeCategory]);
 
   const filtered = products.filter((p) =>
