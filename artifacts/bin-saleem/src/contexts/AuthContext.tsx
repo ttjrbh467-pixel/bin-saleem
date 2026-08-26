@@ -68,8 +68,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    // Safety timeout — never block longer than 6 seconds
-    const timeout = setTimeout(() => setLoading(false), 6000);
+    // Firebase can be slow on some mobile networks. Never block the first
+    // screen while the session is being checked.
+    const timeout = setTimeout(() => setLoading(false), 1200);
 
     getRedirectResult(auth)
       .then(async (result) => {
@@ -151,20 +152,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setRole(null);
     setFsUser(null);
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-[100dvh] w-full flex flex-col items-center justify-center bg-background">
-        <div
-          className="w-16 h-16 rounded-full border-2 border-t-primary border-r-primary border-b-transparent border-l-transparent animate-spin mb-6"
-          style={{ boxShadow: "0 0 20px rgba(0,212,255,0.4)" }}
-        />
-        <p className="text-primary font-bold text-sm" style={{ textShadow: "0 0 8px rgba(0,212,255,0.6)" }}>
-          سوق بن سليم
-        </p>
-      </div>
-    );
-  }
 
   return (
     <AuthContext.Provider
