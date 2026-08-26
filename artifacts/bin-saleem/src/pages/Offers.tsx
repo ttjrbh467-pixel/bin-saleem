@@ -63,6 +63,8 @@ export default function Offers() {
                   <img
                     src={product.imageUrl || "https://via.placeholder.com/400x200?text=عرض"}
                     alt={product.nameAr}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover opacity-50 transition-transform duration-700 group-hover:scale-105"
                     onError={(e) => { (e.target as HTMLImageElement).src = "https://via.placeholder.com/400x200?text=عرض"; }}
                   />
