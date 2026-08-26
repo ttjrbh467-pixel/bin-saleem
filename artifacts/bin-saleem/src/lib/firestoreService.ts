@@ -152,9 +152,9 @@ export function subscribeProducts(
   let q;
   if (categoryId) {
     // Single where, sort client-side
-    q = query(collection(db, "products"), where("category", "==", categoryId));
+    q = query(collection(db, "products"), where("category", "==", categoryId), limit(80));
   } else {
-    q = query(collection(db, "products"), orderBy("createdAt", "desc"));
+    q = query(collection(db, "products"), orderBy("createdAt", "desc"), limit(80));
   }
   return onSnapshot(q, (snap) => {
     const products = snap.docs.map((d) => ({ id: d.id, ...d.data() } as FSProduct));
