@@ -1,0 +1,315 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: Bin Saleem Supermarket API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: products
+    description: Product operations
+  - name: categories
+    description: Category operations
+  - name: cart
+    description: Cart operations
+  - name: orders
+    description: Order operations
+  - name: offers
+    description: Special offers
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /products:
+    get:
+      operationId: listProducts
+      tags: [products]
+      summary: List all products
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Products list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+  /products/{id}:
+    get:
+      operationId: getProduct
+      tags: [products]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Product details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+  /categories:
+    get:
+      operationId: listCategories
+      tags: [categories]
+      summary: List product categories
+      responses:
+        "200":
+          description: Categories list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+  /offers:
+    get:
+      operationId: listOffers
+      tags: [offers]
+      summary: List special offers
+      responses:
+        "200":
+          description: Offers list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Offer"
+  /orders:
+    get:
+      operationId: listOrders
+      tags: [orders]
+      summary: List user orders
+      parameters:
+        - name: userId
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Orders list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Order"
+    post:
+      operationId: createOrder
+      tags: [orders]
+      summary: Create a new order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOrderBody"
+      responses:
+        "201":
+          description: Order created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [orders]
+      summary: Admin dashboard summary
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        nameAr:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        originalPrice:
+          type: number
+        imageUrl:
+          type: string
+        category:
+          type: string
+        inStock:
+          type: boolean
+        discount:
+          type: number
+        rating:
+          type: number
+        reviewCount:
+          type: number
+      required:
+        - id
+        - name
+        - nameAr
+        - price
+        - imageUrl
+        - category
+        - inStock
+    Category:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        nameAr:
+          type: string
+        icon:
+          type: string
+        productCount:
+          type: number
+      required:
+        - id
+        - name
+        - nameAr
+        - icon
+    Offer:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        titleAr:
+          type: string
+        description:
+          type: string
+        discount:
+          type: number
+        imageUrl:
+          type: string
+        validUntil:
+          type: string
+        productId:
+          type: string
+      required:
+        - id
+        - title
+        - titleAr
+        - discount
+        - imageUrl
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderItem"
+        total:
+          type: number
+        status:
+          type: string
+          enum: [pending, confirmed, delivered, cancelled]
+        createdAt:
+          type: string
+      required:
+        - id
+        - userId
+        - items
+        - total
+        - status
+        - createdAt
+    OrderItem:
+      type: object
+      properties:
+        productId:
+          type: string
+        quantity:
+          type: number
+        price:
+          type: number
+      required:
+        - productId
+        - quantity
+        - price
+    CreateOrderBody:
+      type: object
+      properties:
+        userId:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderItem"
+        total:
+          type: number
+      required:
+        - userId
+        - items
+        - total
+    DashboardSummary:
+      type: object
+      properties:
+        totalOrders:
+          type: number
+        totalRevenue:
+          type: number
+        totalProducts:
+          type: number
+        totalUsers:
+          type: number
+        recentOrders:
+          type: array
+          items:
+            $ref: "#/components/schemas/Order"
+      required:
+        - totalOrders
+        - totalRevenue
+        - totalProducts
+        - totalUsers
+        - recentOrders
