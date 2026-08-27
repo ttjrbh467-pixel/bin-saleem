@@ -5,7 +5,6 @@ import { useCart } from "../contexts/CartContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { getCategories, subscribeProducts, initCategories } from "../lib/firestoreService";
-import { isFirebaseConfigured } from "../lib/firebase";
 import type { FSCategory, FSProduct } from "../types";
 import { useLocation } from "wouter";
 
@@ -21,11 +20,6 @@ export default function Home() {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    if (!isFirebaseConfigured) {
-      setLoadingCats(false);
-      return;
-    }
-
     initCategories()
       .then(() => getCategories())
       .then((cats) => {
@@ -36,12 +30,6 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (!isFirebaseConfigured) {
-      setProducts([]);
-      setLoadingProds(false);
-      return;
-    }
-
     setLoadingProds(true);
     const unsub = subscribeProducts(
       activeCategory,
@@ -117,7 +105,7 @@ export default function Home() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="ابحث عن منتجات..."
-            className="w-full bg-card border border-border rounded-xl py-3 pr-10 pl-4 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-muted-foreground"
+             className="w-full three-d-surface rounded-xl py-3 pr-10 pl-4 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-muted-foreground"
           />
         </div>
 
@@ -131,7 +119,7 @@ export default function Home() {
               className="snap-center shrink-0 flex flex-col items-center gap-2 group"
             >
               <div
-                className={`w-16 h-16 rounded-full flex items-center justify-center border-2 transition-all overflow-hidden ${
+                 className={`three-d-circle w-16 h-16 rounded-full flex items-center justify-center border-2 transition-all overflow-hidden ${
                   activeCategory === null
                     ? "border-primary shadow-[0_0_16px_rgba(0,212,255,0.5)]"
                     : "border-border/50"
@@ -162,7 +150,7 @@ export default function Home() {
                     className="snap-center shrink-0 flex flex-col items-center gap-2 group"
                   >
                     <div
-                      className={`w-16 h-16 rounded-full overflow-hidden border-2 transition-all ${
+                         className={`three-d-circle w-16 h-16 rounded-full overflow-hidden border-2 transition-all ${
                         isActive
                           ? "border-primary shadow-[0_0_16px_rgba(0,212,255,0.5)] scale-110"
                           : "border-border/50 group-hover:border-primary/40"
@@ -232,7 +220,7 @@ export default function Home() {
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: idx * 0.04 }}
-                    className="bg-card rounded-2xl p-3 border border-border flex flex-col relative group hover:border-primary/50 transition-colors"
+                     className="three-d-surface rounded-2xl p-3 flex flex-col relative group hover:border-primary/50 transition-colors"
                   >
                     {product.discount && (
                       <div
@@ -267,7 +255,7 @@ export default function Home() {
                       <button
                         onClick={() => handleAddToCart(product)}
                         disabled={!product.inStock}
-                        className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-primary-foreground transition-all disabled:opacity-40"
+                         className="three-d-button w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-primary-foreground transition-all disabled:opacity-40"
                       >
                         <Plus className="w-4 h-4" />
                       </button>
